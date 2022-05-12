@@ -6,7 +6,7 @@
 /*
 Plugin Name: Woocommerce Gift Aid
 Plugin URI: https://rajivlodhia.com/projects/google-static-maps-builder/
-Description:
+Description: A simple solution to getting Gift Aid permission from your customers on your WooCommerce store.
 Version: 1.0.0
 Author: Rajiv Lodhia
 Author URI: https://rajivlodhia.com
@@ -14,6 +14,9 @@ License: GPLv2 or later
 Text Domain: rlwga-wc-gift-aid
 */
 
+/**
+ * Add Gift Aid option to the product backend.
+ */
 add_action( 'woocommerce_product_options_advanced', 'rlwga_option_group' );
 function rlwga_option_group() {
 	echo '<div class="option_group option_group_gift_aid">';
@@ -29,11 +32,17 @@ function rlwga_option_group() {
 	echo '</div>';
 }
 
+/**
+ * Save WooCommerce backend options for Gift Aid.
+ */
 add_action( 'woocommerce_process_product_meta', 'rlwga_save_fields', 10, 2 );
 function rlwga_save_fields( $id, $post ){
 	update_post_meta( $id, 'gift_aid_status', $_POST['gift_aid_status'] );
 }
 
+/**
+ * Inject the Gift Aid field into the checkout page.
+ */
 add_action( 'woocommerce_review_order_before_payment', 'rlwga_woocommerce_review_order_before_payment', 10, 0 );
 function rlwga_woocommerce_review_order_before_payment() {
 	if ( _rlwga_cart_has_gift_aid_product() ) {
@@ -54,6 +63,11 @@ function rlwga_woocommerce_review_order_before_payment() {
 	}
 }
 
+/**
+ * Checks if the cart has a product with Gift Aid enabled.
+ *
+ * @return bool
+ */
 function _rlwga_cart_has_gift_aid_product() {
 	$cart = WC()->cart;
 
@@ -69,6 +83,9 @@ function _rlwga_cart_has_gift_aid_product() {
 	return false;
 }
 
+/**
+ * Save the Gift Aid data to the product after checkout.
+ */
 add_action('woocommerce_checkout_update_order_meta', 'rlwga_checkout_field_update_order_meta');
 function rlwga_checkout_field_update_order_meta($order_id) {
 	if (!empty($_POST['woocommerce_gift_aid'])) {
@@ -76,6 +93,9 @@ function rlwga_checkout_field_update_order_meta($order_id) {
 	}
 }
 
+/**
+ * Show whether Gift Aid permission has been given on an order in the WC backend.
+ */
 add_action( 'woocommerce_admin_order_data_after_billing_address', 'rlwga_show_new_checkout_field_order', 10, 1 );
 function rlwga_show_new_checkout_field_order( $order ) {
 	$order_id = $order->get_id();
