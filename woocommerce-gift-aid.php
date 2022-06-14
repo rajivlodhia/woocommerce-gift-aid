@@ -14,6 +14,8 @@ License: GPLv2 or later
 Text Domain: wcga-wc-gift-aid
 */
 
+// TODO: Add plugin dependency - check if WooCommerce is enabled before running anything.
+
 /**
  * Add Gift Aid option to the product backend.
  */
@@ -99,7 +101,7 @@ function wcga_show_new_checkout_field_order( $order ) {
 
 /**
  * Create the section beneath the products tab
- **/
+ */
 add_filter( 'woocommerce_get_sections_products', 'wcga_add_section' );
 function wcga_add_section( $sections ) {
 	$sections['gift_aid'] = __( 'Gift Aid', 'wcga-wc-gift-aid' );
@@ -113,7 +115,7 @@ add_filter( 'woocommerce_get_settings_products', 'wcga_all_settings', 10, 2 );
 function wcga_all_settings( $settings, $current_section ) {
 	/**
 	 * Check the current section is what we want
-	 **/
+	 */
 	if ( $current_section == 'gift_aid' ) {
 		$settings_gift_aid = array();
 		// Add Title to the Settings
@@ -130,14 +132,14 @@ function wcga_all_settings( $settings, $current_section ) {
 			'id'       => 'gift_aid__title',
 			'type'     => 'text',
 			'desc'     => __( 'This is the title that appears at the top of your Gift Aid field on the checkout page.', 'wcga-wc-gift-aid' ),
-			'default'  => __( 'Reclaim Gift Aid' ),
+			'default'  => __( 'Reclaim Gift Aid', 'wcga-wc-gift-aid' ),
 		);
 		// Add second text field option
 		$settings_gift_aid[] = array(
 			'name'     => __( 'Gift Aid Explanation', 'wcga-wc-gift-aid' ),
-			'desc_tip' => __( 'This is the body of text to explain Gift Aid to your customer.', 'wcga-wc-gift-aid' ),
+			'desc_tip' => __( 'HTML can be used in this field', 'wcga-wc-gift-aid' ),
 			'id'       => 'gift_aid__explanation',
-			'type'     => 'textarea',
+			'type'     => 'wysiwyg',
 			'desc'     => __( 'This is the body of text to explain Gift Aid to your customer.', 'wcga-wc-gift-aid' ),
 			'default'  => __(''),
 		);
@@ -148,7 +150,7 @@ function wcga_all_settings( $settings, $current_section ) {
 			'id'       => 'gift_aid__checkbox_text',
 			'type'     => 'text',
 			// 'desc'     => __( '', 'wcga-wc-gift-aid' ),
-			'default'  => __( 'Yes, I would like to claim Gift Aid' ),
+			'default'  => __( 'Yes, I would like to claim Gift Aid', 'wcga-wc-gift-aid' ),
 		);
 
 		$settings_gift_aid[] = array( 'type' => 'sectionend', 'id' => 'gift_aid_sectionend' );
@@ -156,8 +158,32 @@ function wcga_all_settings( $settings, $current_section ) {
 
 		/**
 		 * If not, return the standard settings
-		 **/
+		 */
 	} else {
 		return $settings;
 	}
+}
+
+add_action( 'woocommerce_admin_field_wysiwyg', 'wcga_render_wysiwyg_field' );
+function wcga_render_wysiwyg_field( $value ) {
+	$option_value = $value['value'];
+	$field_description = WC_Admin_Settings::get_field_description( $value )
+
+	?>
+	<tr valign="top">
+		<th scope="row" class="titledesc">
+			<label for="<?php echo esc_attr( $value['id'] ); ?>"><?php echo esc_html( $value['title'] ); ?> <?php echo $field_description['tooltip_html']; // WPCS: XSS ok. ?></label>
+		</th>
+		<td class="forminp forminp-<?php echo esc_attr( sanitize_title( $value['type'] ) ); ?>">
+			<?php echo $field_description['description']; // WPCS: XSS ok. ?>
+
+			<?php
+				wp_editor( $option_value, 'wcga_giftaid_explanation', [
+					'editor_class' => 'wcga_giftaid_explanation__tinymce',
+					'textarea_rows' => 10,
+				] );
+			?>
+		</td>
+	</tr>
+	<?php
 }
