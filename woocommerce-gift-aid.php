@@ -164,6 +164,9 @@ function wcga_all_settings( $settings, $current_section ) {
 	}
 }
 
+/**
+ * Render the TinyMCE WYSIWYG editor for the Gift Aid Explanation field.
+ */
 add_action( 'woocommerce_admin_field_wysiwyg', 'wcga_render_wysiwyg_field' );
 function wcga_render_wysiwyg_field( $value ) {
 	$option_value = $value['value'];
@@ -175,14 +178,13 @@ function wcga_render_wysiwyg_field( $value ) {
 			<label for="<?php echo esc_attr( $value['id'] ); ?>"><?php echo esc_html( $value['title'] ); ?> <?php echo $field_description['tooltip_html']; // WPCS: XSS ok. ?></label>
 		</th>
 		<td class="forminp forminp-<?php echo esc_attr( sanitize_title( $value['type'] ) ); ?>">
-			<?php echo $field_description['description']; // WPCS: XSS ok. ?>
-
 			<?php
 				wp_editor( $option_value, 'wcga_giftaid_explanation', [
 					'editor_class' => 'wcga_giftaid_explanation__tinymce',
 					'textarea_rows' => 10,
 				] );
 			?>
+			<?php echo $field_description['description']; // WPCS: XSS ok. ?>
 		</td>
 	</tr>
 	<?php
