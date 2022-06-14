@@ -14,6 +14,7 @@
 		echo '<p>' . __( $explanation ) . '</p>';
 	}
 
+	$label = WC_Admin_Settings::get_option('gift_aid__checkbox_text');
 	woocommerce_form_field( 'woocommerce_gift_aid', array(
 		'type'        => 'checkbox',
 		'class'       => array(
@@ -22,7 +23,7 @@
 		'label_class' => array(
 			'woocommerce-gift-aid-checkbox-label'
 		),
-		'label'       => __( WC_Admin_Settings::get_option('gift_aid__checkbox_text') ),
+		'label'       => __( !empty( $label ) ? $label : '' ),
 	) );
 
 	?>
