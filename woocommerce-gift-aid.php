@@ -24,9 +24,9 @@ function wcga_option_group() {
 	woocommerce_wp_checkbox( array(
 		'id'      => 'gift_aid_status',
 		'value'   => get_post_meta( get_the_ID(), 'gift_aid_status', true ),
-		'label'   => 'Enable Gift Aid',
+		'label'   => __( 'Enable Gift Aid', 'wcga-wc-gift-aid' ),
 		'desc_tip' => true,
-		'description' => 'Should customers be given the option of Gift Aid for this product?',
+		'description' => __( 'Should customers be given the option of Gift Aid for this product?', 'wcga-wc-gift-aid' ),
 	) );
 
 	echo '</div>';
@@ -68,7 +68,7 @@ function _wcga_cart_has_gift_aid_product() {
 	if ( !is_null( $cart ) ) {
 		foreach ( $cart->get_cart_contents() as $item ) {
 			$item['data'];
-			if ( $item['data']->get_meta('gift_aid_status') === 'yes' ) {
+			if ( $item['data']->get_meta( 'gift_aid_status' ) === 'yes' ) {
 				return true;
 			}
 		}
@@ -80,10 +80,10 @@ function _wcga_cart_has_gift_aid_product() {
 /**
  * Save the Gift Aid data to the product after checkout.
  */
-add_action('woocommerce_checkout_update_order_meta', 'wcga_checkout_field_update_order_meta');
-function wcga_checkout_field_update_order_meta($order_id) {
-	if (!empty($_POST['woocommerce_gift_aid'])) {
-		update_post_meta($order_id, '_gift_aid', sanitize_text_field($_POST['woocommerce_gift_aid']));
+add_action( 'woocommerce_checkout_update_order_meta', 'wcga_checkout_field_update_order_meta' );
+function wcga_checkout_field_update_order_meta( $order_id ) {
+	if ( !empty( $_POST[ 'woocommerce_gift_aid' ] ) ) {
+		update_post_meta( $order_id, '_gift_aid', sanitize_text_field( $_POST[ 'woocommerce_gift_aid' ] ) );
 	}
 }
 
@@ -93,8 +93,8 @@ function wcga_checkout_field_update_order_meta($order_id) {
 add_action( 'woocommerce_admin_order_data_after_billing_address', 'wcga_show_new_checkout_field_order', 10, 1 );
 function wcga_show_new_checkout_field_order( $order ) {
 	$order_id = $order->get_id();
-	$permission_text = get_post_meta( $order_id, '_gift_aid', true ) == '1' ? 'Yes' : 'No';
-	echo '<p><strong>Permission for Gift Aid:</strong> ' . $permission_text . '</p>';
+	$permission_text = get_post_meta( $order_id, '_gift_aid', true ) == '1' ? __( 'Yes', 'wcga-wc-gift-aid' ) : __( 'No', 'wcga-wc-gift-aid' );
+	echo __( '<p><strong>Permission for Gift Aid:</strong> ' . $permission_text . '</p>', 'wcga-wc-gift-aid' );
 }
 
 /**
