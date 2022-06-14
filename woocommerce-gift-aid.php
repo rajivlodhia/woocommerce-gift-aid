@@ -182,6 +182,7 @@ function wcga_render_wysiwyg_field( $value ) {
 				wp_editor( $option_value, 'wcga_giftaid_explanation', [
 					'editor_class' => 'wcga_giftaid_explanation__tinymce',
 					'textarea_rows' => 10,
+					'teeny' => true,
 				] );
 			?>
 			<?php echo $field_description['description']; // WPCS: XSS ok. ?>
