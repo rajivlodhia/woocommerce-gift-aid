@@ -179,8 +179,8 @@ function wcga_render_wysiwyg_field( $value ) {
 		</th>
 		<td class="forminp forminp-<?php echo esc_attr( sanitize_title( $value['type'] ) ); ?>">
 			<?php
-				wp_editor( $option_value, 'wcga_giftaid_explanation', [
-					'editor_class' => 'wcga_giftaid_explanation__tinymce',
+				wp_editor( $option_value, 'gift_aid__explanation', [
+					'editor_class' => 'gift_aid__explanation__tinymce',
 					'textarea_rows' => 10,
 					'teeny' => true,
 				] );
@@ -189,4 +189,13 @@ function wcga_render_wysiwyg_field( $value ) {
 		</td>
 	</tr>
 	<?php
+}
+
+/**
+ * Filter Gift Aid Explanation field on save to keep the HTML.
+ * WooCommerce automatically cleans values so we need to re-set the value to the (sanitized) raw value.
+ */
+add_filter( 'woocommerce_admin_settings_sanitize_option_gift_aid__explanation', 'unclean_giftaid_explanation_field', 10, 3 );
+function unclean_giftaid_explanation_field( $value, $option, $raw_value ) {
+	return wp_kses_post( $raw_value );
 }
