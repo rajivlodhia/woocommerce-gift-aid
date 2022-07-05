@@ -33,6 +33,8 @@ class WoocommerceGiftAid {
 	}
 
 	public function __construct() {
+	    include_once plugin_dir_path( __FILE__ ) . '/class_wcga_requirements.php';
+
 		add_action( 'plugins_loaded', array( $this, 'load_hooks' ), 9 );
 	}
 
