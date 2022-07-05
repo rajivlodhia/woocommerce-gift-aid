@@ -11,7 +11,7 @@
 	// Get the explanation setting from WC.
     $explanation = WC_Admin_Settings::get_option('gift_aid__explanation');
 	if ( !empty( $explanation ) ) {
-		echo '<p>' . __( $explanation ) . '</p>';
+		echo '<div>' . wpautop( __( $explanation ) ) . '</div>';
 	}
 
 	$label = WC_Admin_Settings::get_option('gift_aid__checkbox_text');
