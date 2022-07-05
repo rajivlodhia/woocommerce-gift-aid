@@ -56,7 +56,7 @@ class WoocommerceGiftAid {
 	/**
      * Add Gift Aid option to the product backend.
      */
-    function wcga_option_group() {
+    public function wcga_option_group() {
         echo '<div class="option_group option_group_gift_aid">';
 
         woocommerce_wp_checkbox( array(
@@ -73,14 +73,14 @@ class WoocommerceGiftAid {
     /**
      * Save WooCommerce backend options for Gift Aid.
      */
-    function wcga_save_fields( $id, $post ){
+    public function wcga_save_fields( $id, $post ){
         update_post_meta( $id, 'gift_aid_status', $_POST['gift_aid_status'] );
     }
 
     /**
      * Inject the Gift Aid field into the checkout page.
      */
-    function wcga_woocommerce_review_order_before_payment() {
+    public function wcga_woocommerce_review_order_before_payment() {
         if ( $this->_wcga_cart_has_gift_aid_product() ) {
             // Try to locate the template from the theme in case it wants to be overridden.
             $template = locate_template( [ 'template-gift-aid.php' ] );
@@ -98,7 +98,7 @@ class WoocommerceGiftAid {
      *
      * @return bool
      */
-    function _wcga_cart_has_gift_aid_product() {
+    public function _wcga_cart_has_gift_aid_product() {
         $cart = WC()->cart;
 
         if ( !is_null( $cart ) ) {
@@ -116,7 +116,7 @@ class WoocommerceGiftAid {
     /**
      * Save the Gift Aid data to the product after checkout.
      */
-    function wcga_checkout_field_update_order_meta( $order_id ) {
+    public function wcga_checkout_field_update_order_meta( $order_id ) {
         if ( !empty( $_POST[ 'woocommerce_gift_aid' ] ) ) {
             update_post_meta( $order_id, '_gift_aid', sanitize_text_field( $_POST[ 'woocommerce_gift_aid' ] ) );
         }
@@ -125,7 +125,7 @@ class WoocommerceGiftAid {
     /**
      * Show whether Gift Aid permission has been given on an order in the WC backend.
      */
-    function wcga_show_new_checkout_field_order( $order ) {
+    public function wcga_show_new_checkout_field_order( $order ) {
         $order_id = $order->get_id();
         $permission_text = get_post_meta( $order_id, '_gift_aid', true ) == '1' ? __( 'Yes', 'wcga-wc-gift-aid' ) : __( 'No', 'wcga-wc-gift-aid' );
         echo __( '<p><strong>Permission for Gift Aid:</strong> ' . $permission_text . '</p>', 'wcga-wc-gift-aid' );
@@ -134,7 +134,7 @@ class WoocommerceGiftAid {
     /**
      * Create the section beneath the products tab
      */
-    function wcga_add_section( $sections ) {
+    public function wcga_add_section( $sections ) {
         $sections['gift_aid'] = __( 'Gift Aid', 'wcga-wc-gift-aid' );
         return $sections;
     }
@@ -142,7 +142,7 @@ class WoocommerceGiftAid {
     /**
      * Add settings to the specific section we created before
      */
-    function wcga_all_settings( $settings, $current_section ) {
+    public function wcga_all_settings( $settings, $current_section ) {
         /**
          * Check the current section is what we want
          */
@@ -197,7 +197,7 @@ class WoocommerceGiftAid {
     /**
      * Render the TinyMCE WYSIWYG editor for the Gift Aid Explanation field.
      */
-    function wcga_render_wysiwyg_field( $value ) {
+    public function wcga_render_wysiwyg_field( $value ) {
         $option_value = $value['value'];
         $field_description = WC_Admin_Settings::get_field_description( $value )
 
@@ -224,7 +224,7 @@ class WoocommerceGiftAid {
      * Filter Gift Aid Explanation field on save to keep the HTML.
      * WooCommerce automatically cleans values so we need to re-set the value to the (sanitized) raw value.
      */
-    function unclean_giftaid_explanation_field( $value, $option, $raw_value ) {
+    public function unclean_giftaid_explanation_field( $value, $option, $raw_value ) {
         return wp_kses_post( $raw_value );
     }
 }
