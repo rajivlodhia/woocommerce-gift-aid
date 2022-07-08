@@ -52,8 +52,99 @@ class WoocommerceGiftAid {
             add_filter( 'woocommerce_get_settings_products', array( $this, 'wcga_all_settings' ), 10, 2 );
             add_action( 'woocommerce_admin_field_wysiwyg', array( $this, 'wcga_render_wysiwyg_field' ) );
             add_filter( 'woocommerce_admin_settings_sanitize_option_gift_aid__explanation', array( $this, 'unclean_giftaid_explanation_field' ), 10, 3 );
+
+		    add_filter( 'manage_edit-shop_order_columns', array( $this, 'register_gift_aid_column' ), 10, 1 );
+		    add_action( 'manage_shop_order_posts_custom_column', array( $this, 'display_gift_aid_column' ), 10, 1 );
+		    add_action( 'restrict_manage_posts', array( $this, 'show_gift_aid_permission_filter_checkbox' ) );
+		    add_filter( 'pre_get_posts', array( $this, 'filter_woocommerce_orders_in_the_table' ), 99, 1 );
 		}
     }
+
+	/**
+     * Register our Gift Aid Permission column on the Orders table.
+     *
+	 * @param $columns
+	 *
+	 * @return array
+	 */
+	public function register_gift_aid_column( $columns ) {
+		$new_columns = [];
+		// Creating an updated list of columns to so we're able to add our new Gift Aid column right after the
+        // Order Status column.
+		foreach ( $columns as $column_id => $column_title ) {
+			$new_columns[ $column_id ] = $column_title;
+			if ( $column_id == 'order_status' ) {
+				$new_columns['gift_aid_permission'] = __( 'Gift Aid Permission', 'wcga-wc-gift-aid' );
+            }
+		}
+		return $new_columns;
+	}
+
+	/**
+     * Displays the tick on the Order table rows where Gift Aid permission has been given for that order.
+     *
+	 * @param $column
+	 */
+	function display_gift_aid_column( $column ) {
+		global $post;
+
+		if ( 'gift_aid_permission' === $column ) {
+			$gift_aid_status = get_post_meta( $post->ID, '_gift_aid', true );
+
+			if ( $gift_aid_status !== false && strlen( $gift_aid_status ) > 0 ) {
+				echo "✔️";
+			}
+		}
+	}
+
+	/**
+	 * Renders the "Orders with Gift Aid Permission" filter checkbox.
+	 */
+	public function show_gift_aid_permission_filter_checkbox() {
+		?>
+
+        <label>
+            Orders with Gift Aid Permission
+            <input style="height: 16px;" type="checkbox" name="gift_aid_permission" id="gift_aid_permission" <?php echo isset( $_GET['gift_aid_permission'] ) ? 'checked' : ''; ?>>
+        </label>
+
+		<?php
+    }
+
+	/**
+     * Filters the Orders table query for the Gift Aid Permission filter.
+     *
+	 * @param $query
+	 *
+	 * @return mixed
+	 */
+	public function filter_woocommerce_orders_in_the_table( $query ) {
+		if ( ! is_admin() ) {
+			return $query;
+		}
+
+		global $pagenow;
+
+		if ( 'edit.php' === $pagenow && 'shop_order' === $query->query['post_type'] ) {
+
+			// We don't need to modify a query if a checkbox wasn't checked
+			if ( ! isset( $_GET['gift_aid_permission'] ) ) {
+				return $query;
+			}
+
+			$meta_query = array(
+				array(
+					'key' => '_gift_aid',
+					'value' => 1,
+					'compare' => '='
+				)
+			);
+
+			$query->set( 'meta_query', $meta_query );
+		}
+
+		return $query;
+	}
 
 	/**
      * Add Gift Aid option to the product backend.
