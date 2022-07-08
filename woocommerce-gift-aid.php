@@ -5,7 +5,7 @@
 
 /*
 Plugin Name: WooCommerce Gift Aid
-Plugin URI: https://rajivlodhia.com/projects/google-static-maps-builder/
+Plugin URI: https://rajivlodhia.com/projects/woocommerce-giftaid-addon/
 Description: A simple solution to getting Gift Aid permission from your customers on your WooCommerce store.
 Version: 1.0.0
 Author: Rajiv Lodhia
