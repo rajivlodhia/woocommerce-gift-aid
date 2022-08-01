@@ -46,3 +46,9 @@ Disclaimer
 This plugin does not gather any data about the customer. It is the sole responsibility of the store using this plugin to
 make sure their customers are eligible to claim Gift Aid on a purchase. It is also the sole responsibility of the store
 to ensure their customers understand what giving consent for Gift Aid means.
+
+According to the www.gov.uk (https://www.gov.uk/claim-gift-aid/gift-aid-declarations), a full Gift Aid declaration must
+include the donor's full name, the donor's home address and an agreement from the donor to Gift Aid being claimed.
+
+This plugin only handles the agreement from the donor. This plugin assumes that your store is already getting the user's
+full name and home address as part of the billing information.
