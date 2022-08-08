@@ -104,7 +104,7 @@ class WoocommerceGiftAid {
 		?>
 
         <label>
-            Orders with Gift Aid Consent
+            <?php echo __( 'Orders with Gift Aid Consent', 'wcga-wc-gift-aid' ); ?>
             <input style="height: 16px;" type="checkbox" name="gift_aid_consent" id="gift_aid_consent" <?php echo isset( $_GET['gift_aid_consent'] ) ? 'checked' : ''; ?>>
         </label>
 
