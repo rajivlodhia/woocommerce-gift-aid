@@ -292,7 +292,7 @@ class WoocommerceGiftAid {
      */
     public function wcga_render_wysiwyg_field( $value ) {
         $option_value = $value['value'];
-        $field_description = WC_Admin_Settings::get_field_description( $value )
+        $field_description = WC_Admin_Settings::get_field_description( $value );
 
         ?>
         <tr valign="top">
