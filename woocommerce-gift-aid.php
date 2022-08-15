@@ -196,7 +196,6 @@ class WoocommerceGiftAid {
 
         if ( !is_null( $cart ) ) {
             foreach ( $cart->get_cart_contents() as $item ) {
-                $item['data'];
                 if ( $item['data']->get_meta( 'gift_aid_status' ) === 'yes' ) {
                     return true;
                 }
