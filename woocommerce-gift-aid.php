@@ -47,7 +47,6 @@ class WoocommerceGiftAid {
             add_action( 'woocommerce_process_product_meta', array( $this, 'wcga_save_fields' ), 10, 2 );
             add_action( 'woocommerce_review_order_before_payment', array( $this, 'wcga_woocommerce_review_order_before_payment' ), 10, 0 );
             add_action( 'woocommerce_checkout_update_order_meta', array( $this, 'wcga_checkout_field_update_order_meta' ) );
-            add_action( 'woocommerce_admin_order_data_after_billing_address', array( $this, 'wcga_show_new_checkout_field_order' ), 10, 1 );
             add_filter( 'woocommerce_get_sections_products', array( $this, 'wcga_add_section' ) );
             add_filter( 'woocommerce_get_settings_products', array( $this, 'wcga_all_settings' ), 10, 2 );
             add_action( 'woocommerce_admin_field_wysiwyg', array( $this, 'wcga_render_wysiwyg_field' ) );
@@ -57,6 +56,9 @@ class WoocommerceGiftAid {
 		    add_action( 'manage_shop_order_posts_custom_column', array( $this, 'display_gift_aid_column' ), 10, 1 );
 		    add_action( 'restrict_manage_posts', array( $this, 'show_gift_aid_consent_filter_checkbox' ) );
 		    add_filter( 'pre_get_posts', array( $this, 'filter_woocommerce_orders_in_the_table' ), 99, 1 );
+
+            add_action( 'woocommerce_admin_order_data_after_order_details', array( $this, 'custom_editable_order_meta' ) );
+            add_action( 'woocommerce_process_shop_order_meta', array( $this, 'process_order_meta' ), 10, 2 );
 		}
     }
 
@@ -214,13 +216,44 @@ class WoocommerceGiftAid {
         }
     }
 
-    /**
-     * Show whether Gift Aid consent has been given on an order in the WC backend.
-     */
-    public function wcga_show_new_checkout_field_order( $order ) {
-        $order_id = $order->get_id();
-        $consent_text = get_post_meta( $order_id, '_gift_aid', true ) == '1' ? __( 'Yes', 'wcga-wc-gift-aid' ) : __( 'No', 'wcga-wc-gift-aid' );
-        echo __( '<p><strong>Consent for Gift Aid:</strong> ' . $consent_text . '</p>', 'wcga-wc-gift-aid' );
+    public function custom_editable_order_meta( $order ){
+
+        ?>
+        <br class="clear" />
+        <h3>Gift Aid <a href="#" class="edit_address">Edit</a></h3>
+        <?php
+
+        $gift_aid = $order->get_meta( '_gift_aid' ) ?: '0';
+        ?>
+        <div class="address">
+            <p><strong>Gift Aid Consent Given?</strong><?php echo $gift_aid ? 'Yes' : 'No' ?></p>
+        </div>
+        <div class="edit_address">
+            <?php
+
+            woocommerce_wp_radio( array(
+                'id' => '_gift_aid',
+                'label' => 'Gift Aid Consent Given?',
+                'value' => $gift_aid,
+                'options' => array(
+                    '0' => 'No',
+                    '1' => 'Yes'
+                ),
+                'style' => 'width:16px', // required for checkboxes and radio buttons
+                'wrapper_class' => 'form-field-wide' // always add this class
+            ) );
+
+            ?>
+        </div>
+        <?php
+    }
+
+    public function process_order_meta( $order_id, $order ) {
+        if ( isset( $_POST[ '_gift_aid' ] ) ) {
+            if ( get_post_meta( $order_id, '_gift_aid', true ) != $_POST[ '_gift_aid' ] ) {
+                update_post_meta( $order_id, '_gift_aid', sanitize_text_field( $_POST[ '_gift_aid' ] ) );
+            }
+        }
     }
 
     /**
