@@ -35,6 +35,10 @@ under the Products tab (`/wp-admin/admin.php?page=wc-settings&tab=products&secti
 Admin users viewing the WooCommerce Orders list can see a check mark next to the orders that have given consent for Gift Aid.
 The WooCommerce Orders list can also be filtered so it only shows orders with Gift Aid consent given.
 
+Changing the Gift Aid template can be done easily. You can change the template that is shown to the customer at checkout
+by copying the file `wp-content/plugins/woocommerce-gift-aid/templates/gift-aid-template.php` to your active theme's
+folder. You can then edit the template to suit your needs from there.
+
 
 Credits
 -------
