@@ -17,7 +17,7 @@ class WCGA_Requirements {
 			return false;
 		}
 
-		if ( version_compare( PHP_VERSION, '5.6', '<' ) ) {
+		if ( version_compare( PHP_VERSION, '7.1', '<' ) ) {
 			add_action( 'admin_notices', array ( $this, 'required_php_version' ) );
 			return false;
 		}
