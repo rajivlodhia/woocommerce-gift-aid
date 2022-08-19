@@ -6,14 +6,14 @@
 	$title = WC_Admin_Settings::get_option( 'gift_aid__title' );
 	$title = apply_filters( 'wcga_render_title_field', $title );
 	if ( !empty( $title ) ) {
-		echo '<h2 class="woocommerce-gift-aid--title">' . __( $title ) . '</h2>';
+		echo '<h2 class="woocommerce-gift-aid--title">' . __( $title, 'wcga-wc-gift-aid' ) . '</h2>';
 	}
 
 	// Get the explanation setting from WC.
 	$explanation = WC_Admin_Settings::get_option( 'gift_aid__explanation' );
 	$explanation = apply_filters( 'wcga_render_explanation_field', $explanation );
 	if ( !empty( $explanation ) ) {
-		echo '<div class="woocommerce-gift-aid--explanation">' . wpautop( __( $explanation ) ) . '</div>';
+		echo '<div class="woocommerce-gift-aid--explanation">' . wpautop( __( $explanation, 'wcga-wc-gift-aid' ) ) . '</div>';
 	}
 
 	$label = WC_Admin_Settings::get_option( 'gift_aid__checkbox_text' );
@@ -25,7 +25,7 @@
 		'label_class' => array(
 			'woocommerce-gift-aid-checkbox-label'
 		),
-		'label'       => __( !empty( $label ) ? $label : '' ),
+		'label'       => __( !empty( $label ) ? $label : '', 'wcga-wc-gift-aid' ),
 	) );
 
 	?>
